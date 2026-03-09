@@ -16,7 +16,7 @@ Always use Move 2024 edition. Every new package's `Move.toml` must include:
 ```toml
 [package]
 name = "my_package"
-edition = "2024.beta"
+edition = "2024"
 ```
 
 **Implicit framework dependencies (Sui 1.45+)** — do not list `Sui`, `MoveStdlib`, `Bridge`, or `SuiSystem` in `[dependencies]`. They are implicit:
@@ -778,3 +778,16 @@ pool.destroy_for_testing();
 | `let x = ...` for mutable vars | Legacy Sui Move | Use `let mut x = ...` |
 | `use` inside function bodies for module-level imports | Style issue | Put `use` at the top of the module |
 | `&signer` | Rust / Aptos | Does not exist in Sui Move |
+
+## 20. Sui CLI
+
+When writing or recommending Sui CLI commands (e.g. in tutorials or docs), **do not include `--gas-budget` by default**. The CLI automatically estimates gas; only add `--gas-budget` when the user must override (e.g. very large transactions or when the default fails).
+
+```bash
+# ✅ Omit gas-budget — CLI uses automatic estimation
+sui client publish
+sui client call --package 0x... --module m --function f --args ...
+
+# ❌ Unnecessary in most docs/tutorials
+sui client publish --gas-budget 100000000
+```
